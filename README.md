@@ -47,12 +47,12 @@ Skills whose tools you don't have simply won't work; they don't affect anything 
 
 Written in-house: council, decision-record, source-sweep, skill-harvest, verify-loop, transcribe, youtube, codex-copy, everything-search, grilling, grill-me, scroll-world.
 
-Third-party, copied in as-is (check the source for newer versions):
+Third-party, copied in unmodified under their own licences (MIT / Apache-2.0); check the sources for newer versions. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md):
 
 - ponytail family: https://github.com/DietrichGebert/ponytail
 - impeccable: https://github.com/pbakaus/impeccable
-- Cloudflare skills (cloudflare, agents-sdk, durable-objects, workers-best-practices, wrangler, sandbox-sdk, cloudflare-email-service, cloudflare-one, cloudflare-one-migrations, turnstile-spin, web-perf): Cloudflare's published skills
-- graphify: ships with the `graphifyy` package
+- Cloudflare skills (cloudflare, agents-sdk, durable-objects, workers-best-practices, wrangler, sandbox-sdk, cloudflare-email-service, cloudflare-one, cloudflare-one-migrations, turnstile-spin, web-perf): https://github.com/cloudflare/skills
+- graphify: https://github.com/safishamsi/graphify
 
 ## Updating the kit (for Jaz)
 
