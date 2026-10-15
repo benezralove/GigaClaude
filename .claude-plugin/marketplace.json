@@ -1,10 +1,10 @@
 {
   "name": "gigaclaude",
   "owner": {
-    "name": "Jaz"
+    "name": "Ben"
   },
   "metadata": {
-    "description": "Jaz's shared Claude Code skills for the team."
+    "description": "Ben's shared Claude Code skills for the team."
   },
   "plugins": [
     {
