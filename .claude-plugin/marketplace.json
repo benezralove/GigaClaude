@@ -1,0 +1,16 @@
+{
+  "name": "gigaclaude",
+  "owner": {
+    "name": "Jaz"
+  },
+  "metadata": {
+    "description": "Jaz's shared Claude Code skills for the team."
+  },
+  "plugins": [
+    {
+      "name": "team-kit",
+      "source": "./plugins/team-kit",
+      "description": "Shared Claude Code skills for the team."
+    }
+  ]
+}

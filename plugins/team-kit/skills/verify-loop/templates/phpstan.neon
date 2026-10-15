@@ -1,0 +1,16 @@
+# Larastan — Laravel-aware static analysis.
+# Install: composer require --dev larastan/larastan
+includes:
+    - vendor/larastan/larastan/extension.neon
+    # - phpstan-baseline.neon    # uncomment after generating a baseline (see below)
+
+parameters:
+    level: 5
+    paths:
+        - app
+        # - database
+        # - routes
+
+# Existing codebase flooding with errors? Grandfather them, then raise `level` over time:
+#   vendor/bin/phpstan analyse --generate-baseline
+#   (then uncomment the phpstan-baseline.neon include above)
