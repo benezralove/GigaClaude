@@ -1,6 +1,6 @@
 # GigaClaude
 
-Ben's Claude Code skills, packaged as a plugin, plus a team version of the global `CLAUDE.md`.
+Ben Love's Claude Code skills, packaged as a plugin, plus a team version of the global `CLAUDE.md`.
 
 ## Install (about two minutes)
 
@@ -54,6 +54,6 @@ Third-party, copied in unmodified under their own licences (MIT / Apache-2.0); c
 - Cloudflare skills (cloudflare, agents-sdk, durable-objects, workers-best-practices, wrangler, sandbox-sdk, cloudflare-email-service, cloudflare-one, cloudflare-one-migrations, turnstile-spin, web-perf): https://github.com/cloudflare/skills
 - graphify: https://github.com/safishamsi/graphify
 
-## Updating the kit (for Ben)
+## Updating the kit (for Ben Love)
 
 Edit or add skills under `plugins/team-kit/skills/`, bump `version` in `plugins/team-kit/.claude-plugin/plugin.json`, commit and push.
