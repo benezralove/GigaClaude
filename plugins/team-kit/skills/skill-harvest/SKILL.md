@@ -88,7 +88,7 @@ to a few lines. Say WHY, because a rule without a reason gets rationalised away 
 
 ## Anti-patterns, all of which have happened
 
-- **Encoding a project fact as a global rule.** "Modality is out" is true of Real Sky and meaningless
+- **Encoding a project fact as a global rule.** "Modality is out" is true of one project and meaningless
   elsewhere. Project `CLAUDE.md`.
 - **Writing a skill for something that must always be on.** If it needs to fire every time, a skill
   is the wrong container: it might not be loaded.
@@ -99,7 +99,7 @@ to a few lines. Say WHY, because a rule without a reason gets rationalised away 
 
 ## Worked examples
 
-Real candidates from a single Real Sky session, showing the routing decision each time.
+Real candidates from a single research-project session, showing the routing decision each time.
 
 **Source once per SOURCE, not once per subject. → SKILL.**
 Researching 13 signs against 13 shared texts, the obvious shape is one pass per sign, which refetches

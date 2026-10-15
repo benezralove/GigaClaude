@@ -10,7 +10,56 @@
     {
       "name": "team-kit",
       "source": "./plugins/team-kit",
-      "description": "Shared Claude Code skills for the team."
+      "description": "Shared Claude Code skills for the team, plus the Playwright browser tool."
+    },
+    {
+      "name": "superpowers",
+      "source": { "source": "url", "url": "https://github.com/obra/superpowers.git" },
+      "description": "Process skills: brainstorming, planning, TDD, systematic debugging, code review.",
+      "homepage": "https://github.com/obra/superpowers"
+    },
+    {
+      "name": "last30days",
+      "source": { "source": "url", "url": "https://github.com/mvanhorn/last30days-skill.git" },
+      "description": "Research what people said about a topic in the last 30 days across Reddit, X, YouTube, HN and the web.",
+      "homepage": "https://github.com/mvanhorn/last30days-skill"
+    },
+    {
+      "name": "twelvelabs",
+      "source": { "source": "url", "url": "https://github.com/twelvelabs-io/twelve-labs-claude-code-plugin.git" },
+      "description": "Search, analyse and embed video with TwelveLabs (needs a TwelveLabs API key).",
+      "homepage": "https://github.com/twelvelabs-io/twelve-labs-claude-code-plugin"
+    },
+    {
+      "name": "security-guidance",
+      "source": "./plugins/security-guidance",
+      "description": "Security reminder hook that warns about potential security issues when editing files, including command injection, XSS, and unsafe code patterns.",
+      "author": { "name": "Anthropic" },
+      "homepage": "https://github.com/anthropics/claude-plugins-public/tree/main/plugins/security-guidance"
+    },
+    {
+      "name": "typescript-lsp",
+      "source": "./plugins/typescript-lsp",
+      "description": "TypeScript/JavaScript language server for code intelligence (needs typescript-language-server installed).",
+      "version": "1.0.0",
+      "author": { "name": "Anthropic" },
+      "strict": false,
+      "lspServers": {
+        "typescript": {
+          "command": "typescript-language-server",
+          "args": ["--stdio"],
+          "extensionToLanguage": {
+            ".ts": "typescript",
+            ".tsx": "typescriptreact",
+            ".js": "javascript",
+            ".jsx": "javascriptreact",
+            ".mts": "typescript",
+            ".cts": "typescript",
+            ".mjs": "javascript",
+            ".cjs": "javascript"
+          }
+        }
+      }
     }
   ]
 }

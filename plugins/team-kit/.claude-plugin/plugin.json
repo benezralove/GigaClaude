@@ -1,6 +1,6 @@
 {
   "name": "team-kit",
-  "version": "1.0.0",
-  "description": "Shared Claude Code skills: Cloudflare, design (impeccable), ponytail, council, verify-loop, graphify, research and workflow helpers.",
+  "version": "1.1.0",
+  "description": "Shared Claude Code skills (Cloudflare, impeccable design, ponytail, council, verify-loop, graphify, research and workflow helpers), the Playwright browser tool, and hooks for context warnings, graphify refresh and design checks.",
   "author": { "name": "Ben Love" }
 }

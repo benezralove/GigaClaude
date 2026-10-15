@@ -1,0 +1,55 @@
+{
+  "description": "GigaClaude hooks: context-usage warning, graphify auto-refresh, Everything client start (Windows only), impeccable design checks on UI edits.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 && node \"${CLAUDE_PLUGIN_ROOT}/hooks/context-warn.js\" || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/graphify-refresh.sh\" || true",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "command -v powershell >/dev/null 2>&1 && powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/hooks/everything-ensure.ps1\" || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 && node \"${CLAUDE_PLUGIN_ROOT}/skills/impeccable/scripts/hook.mjs\" || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v node >/dev/null 2>&1 && node \"${CLAUDE_PLUGIN_ROOT}/skills/impeccable/scripts/hook.mjs\" || true",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
