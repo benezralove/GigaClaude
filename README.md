@@ -60,7 +60,7 @@ Skills from a plugin are namespaced, so `/council` may show as `/team-kit:counci
 | everything-search | Windows + [Everything](https://www.voidtools.com/) |
 | web-perf | Chrome DevTools MCP server |
 | scroll-world | Higgsfield MCP connector |
-| Cloudflare skills, turnstile-spin, wrangler | A Cloudflare account; `wrangler` per project |
+| Cloudflare skills, turnstile-spin, wrangler, cf-cli | A Cloudflare account; `wrangler` (and optionally the `cf` CLI) per project |
 
 Skills whose tools you don't have simply won't work; they don't affect anything else.
 
@@ -72,7 +72,7 @@ Third-party, copied in unmodified under their own licences (MIT / Apache-2.0); c
 
 - ponytail family: https://github.com/DietrichGebert/ponytail
 - impeccable: https://github.com/pbakaus/impeccable
-- Cloudflare skills (cloudflare, agents-sdk, durable-objects, workers-best-practices, wrangler, sandbox-sdk, cloudflare-email-service, cloudflare-one, cloudflare-one-migrations, turnstile-spin, web-perf): https://github.com/cloudflare/skills
+- Cloudflare skills (cloudflare, agents-sdk, durable-objects, workers-best-practices, wrangler, sandbox-sdk, cloudflare-email-service, cloudflare-one, cloudflare-one-migrations, turnstile-spin, web-perf, basin, cf-cli, gateway-workers, k2, nextjs-on-cloudflare, sandbox-stable, sandbox-next, sandbox-migrate-to-next, workers-profiling): https://github.com/cloudflare/skills
 - graphify: https://github.com/safishamsi/graphify
 
 ## Hooks (run automatically once team-kit is installed)

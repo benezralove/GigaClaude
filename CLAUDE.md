@@ -26,6 +26,23 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **The Summary and "What's next" are the two places I actually look.** The Summary says what; "What's next" says who is blocked on whom. Keep both short and do not repeat the body in either.
 - Skip the Summary only on genuinely trivial replies, where the whole answer is already one or two lines.
 
+## Choice boxes need their context in the message (all projects, always)
+- **The failure:** ending a turn with a next-step box (a question with two or three short buttons) when the message above it never explained the choice. The box only shows a one-line question and buttons of a few words, so I'm left guessing what each button would actually do. This has happened repeatedly.
+- **Before any choice box, the message itself must say, in plain words:**
+  1. What the thing is and where I'd see it, with a link when there is one.
+  2. What each button would actually do: what changes, where, and who notices.
+  3. What happens if I pick "leave it" or nothing, and whether there's a deadline (for example "harmless now, must be fixed before launch").
+  4. Your recommendation and the one-line reason.
+- **Test it:** if I couldn't make the decision from the message with the box hidden, the message isn't finished. The box is a shortcut for answering, never the explanation.
+- **Put it in "What's next",** where I look. The box ends the turn, so nothing can be added after it.
+
+## No stray pages or links left lying around (all projects, always)
+- **The failure:** on one client site, a setup-day holding page ("Coming soon") sat at the site's bare address for six days after the real work moved on. Then I sent that address as the preview link, and the user saw a placeholder instead of the real page.
+- **Anything temporary that a browser can reach** lives only as long as it's needed. That covers placeholder or holding pages, starter pages from setup, test or demo routes, debug pages, and temporary links or redirects.
+- **Say so when you make one:** what it is, where it is, and what should end it. Note it in the project's CLAUDE.md or handoff so a later session finds it.
+- **Ask early whether to remove it,** in "What's next", in the same turn it stops being needed. Say what it is, give its link, say what it was for, and recommend remove, replace or keep. Never remove it silently, and never keep it silently.
+- **Before any push, deploy or hand-over,** list the pages the build serves and flag anything that isn't real work.
+
 ## Offer the heavy skills, don't fire them (all projects, every substantial reply)
 - **The rule:** some skills are too costly, slow, or disruptive to auto-invoke, but I still want them when they'd genuinely help. When one is warranted, **offer it in one line and wait.** Never launch it. Never silently skip it either — silently skipping is the current failure mode.
 - **Put the offer in "What's next"**, where I actually look. One line, and say what the payoff is: "Want me to council this?" is weak; "Want me to council this? The pricing call is the only thing here without an obvious right answer" tells me whether to say yes.
@@ -88,6 +105,7 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **If there is no launch config, create one** (`.claude/launch.json`) so the next session can start it by name. If the configured port is taken, set `"autoPort": true` and let it pick a free one rather than killing whatever is on that port, which may be the user's own server.
 - **Deep link to the thing that changed**, not the site root, per the "hand me links, never menu paths" rule. If several pages changed, list one URL per page on its own line.
 - **Check the server's own logs for startup errors before handing it over.** A URL that 500s is worse than no URL.
+- **The local preview link goes in my message every time, including when a next-step box (wrap-up with a question and buttons) ends the turn.** The box shows only the recap and buttons, so write the deep-linked local URL as text before calling it. A box with no link leaves me hunting for where to look.
 - **This does not loosen the verification rule above.** Starting the server and confirming it boots is mine; clicking through the result and signing it off is the user's. Do not drive the browser around the finished work to "check" it.
 - Skip only when the change genuinely has no visual surface (a data migration, a CI tweak, a doc edit).
 
@@ -133,18 +151,26 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **URLs go bare on their own line.** WhatsApp auto-links them. A markdown link shows the brackets and the URL is not clickable.
 - **Short paragraphs, blank line between points.** It is read on a phone in a narrow column, often one-handed.
 - **Put the whole message in a single code block in your reply to me**, with nothing else inside it, so I can copy it in one action. This is the one place a code fence is right: it is a copy target, not a link, so it does not conflict with the "hand me links, never code fences" rule below.
-- **Voice:** keep my wording and tone. In emails use correct capitals and punctuation; only the punctuation changes from the WhatsApp version. Drafts are WhatsApp unless I say otherwise.
+- **Normal capitals and punctuation by default, on every channel and for every client.** Sentence case, full stops at the end of paragraphs, WhatsApp and email alike. Drafts are WhatsApp unless I say otherwise.
+- **Ben's style only when I ask for it** ("write it in Ben's style"): all lower case, and no full stop at the end of a paragraph (full stops between sentences and question marks stay). Keep the same wording and tone either way; only the capitals and punctuation change.
 - These stack with whatever client-voice rules a project's CLAUDE.md sets, rather than replacing them. Formatting for WhatsApp never overrides voice.
 
 ## Several accounts on one machine: scope the command, never switch the default
 - **If I have several credentialed accounts on this machine, they are ALL logged in at once.** The "active" account is only the default for commands that have no other way to choose. Switching it changes my identity for every other repo and tool, and is easy to forget to undo. **So scope the command instead, and ask which account when the task or repo does not make it obvious.**
 - **Verified for `gh`, 30 August 2026:** `GH_TOKEN="$(gh auth token --user NAME)" gh <command>` acts as that account while the active one is untouched. Tested both directions: default resolved to one account, the scoped call to another, in the same shell.
 - **Verified for `git push`, 15 October 2026:** git goes through the credential helper, not `gh`, and putting the username in the remote URL (`https://USER@github.com/...`) is NOT enough: it just prompts for a password and fails. What works, without switching the active account: `GH_TOKEN="$(gh auth token --user NAME)" git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push`. Use the same prefix for `ls-remote` or `fetch` against that account's private repos.
-- **No global git identity is set on this machine**, so a commit in a new repo fails with "Author identity unknown". Set it per repo for the account being pushed as: `git config user.name NAME` and `git config user.email "<id>+NAME@users.noreply.github.com"` (id from `gh api user --jq .id`).
+- **If no global git identity is set**, a commit in a new repo fails with "Author identity unknown". Set it per repo for the account being pushed as: `git config user.name NAME` and `git config user.email "<id>+NAME@users.noreply.github.com"` (id from `gh api user --jq .id`).
 - **Still NOT verified:** other CLIs have the same shape (`aws --profile`, `gcloud --account`), but none were tested here.
 
 ## New projects stay local
 - New projects stay local: "a repo" or "a new project" means a folder in my projects folder with git and local commits. Never create a GitHub repo, add a remote or push until I ask for GitHub by name.
+
+## Local checkpoint commits: commit without asking, never push without asking (all projects)
+- **Standing rule:** when a change is done and verified (the project's `check` gate passes, and for visual work the preview is running), make a local commit on the current branch without asking, before starting the next change. A commit is a rollback point, not a release.
+- **Why:** on one client site the program cards were redesigned three times in one session with nothing committed, so there was no way back to an earlier version except rebuilding it.
+- **Never push, merge or open a PR as part of this.** A push still needs my explicit "push" every time; on sites wired to Cloudflare a push is a deploy (see below).
+- **Don't ask "commit?"** in replies or next-step buttons. Say in one line what was committed (short SHA and message).
+- **Still ask first** before committing anything sensitive (screenshots of emails, phone numbers, personal data, secrets). Never commit build artefacts, and never commit work that fails the check gate.
 
 ## GitHub + Cloudflare deploy: push is production
 - **Standing rule (any site wired to GitHub + Cloudflare, whether via Cloudflare Pages' Git integration, or a GitHub Action that runs `wrangler deploy` to Cloudflare Workers static assets or Pages):** pushing the deploy branch (usually `main`) automatically triggers a Cloudflare build and deploy. **A push = shipping to production.** Only push on the user's explicit go-ahead each time; never infer permission from a general "ship it" or from a prior push.
@@ -152,6 +178,16 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **Never bypass git.** Do not run a local `deploy` / `wrangler deploy` / `next build && deploy` from the working tree for anything not committed and pushed: it makes the deploy branch lag production and silently orphans work for any new branch or clone. Always commit + push and let the connected pipeline deploy.
 - **OpenNext on Cloudflare: prerendered dynamic routes 404 without an incremental cache.** A route using `generateStaticParams` with `dynamicParams = false` works under `next start` but returns 404 on the Worker if `open-next.config.ts` has no `incrementalCache`: the prerendered page misses the cache and Next treats it as unknown. For a fully static site, set `defineCloudflareConfig({ incrementalCache: staticAssetsIncrementalCache })` (import from `@opennextjs/cloudflare/overrides/incremental-cache/static-assets-incremental-cache`). Before the first push of an OpenNext site, run `npm run preview` (the local Workers runtime) and load one URL from every dynamic route, because `next start` will not catch this.
 - Skip for projects not wired to this GitHub + Cloudflare setup.
+
+## Standard deploy setup for client sites
+- The team's GitHub account, Cloudflare account ID and workers.dev subdomain are left out of this public file. Get them from Ben or the project's own CLAUDE.md.
+- **Every site is wired the same way. Check this before saying a site is "set up", and set it up the same way without asking how.**
+  - GitHub: a private repo under the **team's GitHub account**, named after the project folder, remote `origin`, deploy branch `main`. Push as that account with the scoped-token command from the accounts rule above.
+  - `.github/workflows/deploy.yml`: runs on push to `main` (plus `workflow_dispatch`), cancels in-flight runs, installs from the lockfile, builds, and deploys with wrangler to the team's Cloudflare account (inline the account ID; it isn't secret).
+  - One repo secret: `CLOUDFLARE_API_TOKEN` ("Edit Cloudflare Workers" template). The user pastes it at `https://github.com/<team-account>/<repo>/settings/secrets/actions/new`; secrets can't be copied between repos.
+  - While a client's live site is still elsewhere (often WordPress), the Worker is a preview on the team's `*.<subdomain>.workers.dev`, hidden from search by the build flag.
+- **When a project gets a GitHub repo, add the workflow in the same session**, and check `git remote -v` and `.github/workflows/` before claiming a push will deploy.
+- Some repos live under a different account. Ask if a repo's owner isn't obvious.
 
 ## Preview deploys: hidden from search, and the switch is tied to the build (all projects)
 - **Standing rule:** any site deployed to a preview address (Cloudflare Pages or Workers `*.pages.dev` / `*.workers.dev`, Vercel previews, staging subdomains) must be hidden from search engines, AND the hiding must be controlled by one build setting, never hard-coded. Set it up in the first deploy, not later.
