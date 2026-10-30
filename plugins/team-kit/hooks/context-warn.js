@@ -22,20 +22,13 @@ try { hook = JSON.parse(fs.readFileSync(0, "utf8")); } catch { process.exit(0); 
 let pct = null;
 let detail = "";
 
-// 1. Bridge file from the status line.
-const sid = hook.session_id;
-if (sid && !/[/\\]|\.\./.test(sid)) {
-  try {
-    const b = JSON.parse(fs.readFileSync(path.join(os.tmpdir(), `claude-ctx-${sid}.json`), "utf8"));
-    if (typeof b.used_pct === "number" && Date.now() / 1000 - (b.timestamp || 0) < 600) {
-      pct = b.used_pct;
-      detail = "per Claude Code's own meter";
-    }
-  } catch { /* no bridge file */ }
-}
-
-// 2. Transcript fallback.
-if (pct === null && hook.transcript_path && fs.existsSync(hook.transcript_path)) {
+// Read the transcript tail once: the latest assistant usage, unless a compaction is
+// newer. Straight after /compact (or an auto-compact) every number on file, the
+// status-line bridge included, predates the compaction and would be stale, so say
+// nothing until a fresh reply exists. Without this, the first prompt after a compact
+// repeated the pre-compact percentage (seen 29 Oct 2026: "85% full" right after /compact).
+let lastUsage = null;
+if (hook.transcript_path && fs.existsSync(hook.transcript_path)) {
   const p = hook.transcript_path;
   const size = fs.statSync(p).size;
   const len = Math.min(size, 512 * 1024);
@@ -49,17 +42,33 @@ if (pct === null && hook.transcript_path && fs.existsSync(hook.transcript_path))
     if (!line) continue;
     try {
       const rec = JSON.parse(line);
+      if (rec.type === "system" && rec.subtype === "compact_boundary") process.exit(0);
       const u = rec.type === "assistant" && rec.message && rec.message.usage;
-      if (u) {
-        const used = (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0);
-        // Per platform.claude.com/docs/en/models/overview (Sept 2026): Claude 5 models are 1M, Haiku 4.5 is 200k.
-        const win = process.env.CLAUDE_CONTEXT_WINDOW ? WINDOW : (/haiku/i.test(rec.message.model || "") ? 200000 : WINDOW);
-        pct = Math.round((used / win) * 100);
-        detail = `${Math.round(used / 1000)}k of an assumed ${Math.round(win / 1000)}k window`;
-        break;
-      }
+      if (u) { lastUsage = { u, model: rec.message.model || "" }; break; }
     } catch { /* partial line */ }
   }
+}
+
+// 1. Bridge file from the status line.
+const sid = hook.session_id;
+if (sid && !/[/\\]|\.\./.test(sid)) {
+  try {
+    const b = JSON.parse(fs.readFileSync(path.join(os.tmpdir(), `claude-ctx-${sid}.json`), "utf8"));
+    if (typeof b.used_pct === "number" && Date.now() / 1000 - (b.timestamp || 0) < 600) {
+      pct = b.used_pct;
+      detail = "per Claude Code's own meter";
+    }
+  } catch { /* no bridge file */ }
+}
+
+// 2. Transcript fallback.
+if (pct === null && lastUsage) {
+  const u = lastUsage.u;
+  const used = (u.input_tokens || 0) + (u.cache_creation_input_tokens || 0) + (u.cache_read_input_tokens || 0);
+  // Per platform.claude.com/docs/en/models/overview (Sept 2026): Claude 5 models are 1M, Haiku 4.5 is 200k.
+  const win = process.env.CLAUDE_CONTEXT_WINDOW ? WINDOW : (/haiku/i.test(lastUsage.model) ? 200000 : WINDOW);
+  pct = Math.round((used / win) * 100);
+  detail = `${Math.round(used / 1000)}k of an assumed ${Math.round(win / 1000)}k window`;
 }
 
 if (pct === null || pct < PCT) process.exit(0);

@@ -28,9 +28,11 @@ Ben Love's Claude Code setup: skills, plugins, hooks, a status line and a team v
 
    On Windows use the full path, e.g. `node C:/Users/<you>/.claude/hooks/gsd-statusline.js`. Needs Node.js.
 
-4. Restart Claude Code.
+4. Copy [extras/scripts/claude-working-hours.mjs](extras/scripts/claude-working-hours.mjs) to `~/.claude/scripts/claude-working-hours.mjs`. The "Claude working hours" rule in CLAUDE.md runs it when you ask how long Claude spent on something. Needs Node.js.
 
-To get updates later: `/plugin marketplace update gigaclaude`, then `/plugin update team-kit@gigaclaude` (and the same for any other plugin).
+5. Restart Claude Code.
+
+To get updates later: `/plugin marketplace update gigaclaude`, then `/plugin update team-kit@gigaclaude` (and the same for any other plugin). CLAUDE.md and the files in `extras/` don't update through plugins: fetch them again from this repo when they change.
 
 Skills from a plugin are namespaced, so `/council` may show as `/team-kit:council`. Either form works when you ask for it by name.
 
@@ -79,7 +81,7 @@ Third-party, copied in unmodified under their own licences (MIT / Apache-2.0); c
 
 | Hook | When | What it does |
 |---|---|---|
-| context-warn | Every message you send | If the context window is over 85% full, Claude tells you in one line. Change the threshold with the `CLAUDE_CONTEXT_WARN_PCT` env var. |
+| context-warn | Every message you send | If the context window is over 85% full, Claude tells you in one line. Stays quiet straight after a compact, until there's a fresh reading. Change the threshold with the `CLAUDE_CONTEXT_WARN_PCT` env var. |
 | graphify-refresh | Session start | If the repo has a `graphify-out/` graph older than the latest commit, rebuilds it in the background. Does nothing without graphify. |
 | everything-ensure | Session start | Windows only: starts the Everything search client so the everything-search skill works. Does nothing if Everything isn't installed. |
 | impeccable design checks | After Claude edits a file, and at the end of each reply | Runs impeccable's design-rule checks on UI files and reports problems to Claude. |

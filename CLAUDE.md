@@ -43,6 +43,12 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **Ask early whether to remove it,** in "What's next", in the same turn it stops being needed. Say what it is, give its link, say what it was for, and recommend remove, replace or keep. Never remove it silently, and never keep it silently.
 - **Before any push, deploy or hand-over,** list the pages the build serves and flag anything that isn't real work.
 
+## "Claude working hours" means Claude's own time (all projects)
+- **When I ask how many Claude working hours something took, count only Claude's own working time:** from each message that starts Claude working (mine, or a background task finishing) to Claude's last reply or tool result before my next message. My reading and typing between replies is not included.
+- **How:** `node ~/.claude/scripts/claude-working-hours.mjs 10 <session logs> -- <helper folders>`. If the script is missing, copy it from `extras/scripts/` in https://github.com/benezralove/GigaClaude. Session logs are the `.jsonl` files in `~/.claude/projects/<project folder>/`. Also grep the other project folders' logs for the project's name, because work often happens in sessions started elsewhere (for example, an audit may have run from a separate docs folder). Silences over 10 minutes inside a reply count as waiting on me, not work. Overlapping sessions count once.
+- **Report one number:** the total, rounded (for example "about 9 hours"). No by-day table, no method and no helper hours unless I ask for a breakdown. Helpers (subagents) run in parallel and are never added to the total.
+- **"Session hours" is the other measure:** time in sessions including my reading and typing (gaps over 10 minutes left out). Give it only when I ask for session hours.
+
 ## Offer the heavy skills, don't fire them (all projects, every substantial reply)
 - **The rule:** some skills are too costly, slow, or disruptive to auto-invoke, but I still want them when they'd genuinely help. When one is warranted, **offer it in one line and wait.** Never launch it. Never silently skip it either — silently skipping is the current failure mode.
 - **Put the offer in "What's next"**, where I actually look. One line, and say what the payoff is: "Want me to council this?" is weak; "Want me to council this? The pricing call is the only thing here without an obvious right answer" tells me whether to say yes.
@@ -213,6 +219,7 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
   - Descriptive alt text on meaningful images; empty alt on decorative ones.
   - Structured data where it fits (LocalBusiness, Product, FAQ, Article).
   - Plain, specific, local wording where the business is local (suburb and city names a buyer would type).
+  - Testimonials are quoted word for word from the review platform itself (Google, hipages), never copied from the client's own site, which may have edited them. Cut only with an ellipsis, and name the platform.
 - **Small changes are exempt:** a fixed typo, a reworded sentence, a button label or a single paragraph doesn't need a keyword question. Keep the existing page's terms intact; don't strip a keyword out while editing.
 - **Never sacrifice reading for ranking:** no keyword stuffing and no awkward exact-match phrases. If the natural sentence and the keyword clash, the sentence wins and the keyword goes in the heading or title instead.
 
@@ -246,3 +253,21 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **Multi-agent Workflows stay opt-in.** They can spawn dozens of agents at real token cost, so offer one in a line and wait for my yes. Same for "ultracode" mode.
 - **Never edit or reorder a workflow script between a run and its resume.** A resume reuses finished agent calls only up to the first call that differs, so any change, even just reordering the work list, reruns everything after it at full cost. If the remaining work needs a different shape, write a new script that covers only what is unfinished. This has cost two full runs before.
 - **Delegating is not permission to widen scope.** The task stays the task.
+
+## Image options are shown, never listed (all projects)
+- **When I ask for image options, send a picture sheet with SendUserFile (display render) in the same reply:** every option side by side, numbered, cropped to the shape the slot actually shows, with the current image marked. A text list of filenames or descriptions is not an answer.
+- **Why:** on one client site I was given a written list of stepper photos and had to ask for them visually.
+- Keep each option's number matching any notes in the reply, and say which one you recommend.
+
+## "The browser" means Chrome (all projects)
+- **When I say "use the browser", "go into the browser", "open it in the browser" or similar, I mean my real Chrome (Claude in Chrome, `mcp__claude-in-chrome__*`), not the built-in browser pane.** My accounts (Gmail inboxes, Cloudflare, client dashboards) are signed in there.
+- **Why:** once, a photo download was sent to the built-in pane and had to be redirected to Chrome.
+- The built-in pane is still right for previewing local dev servers (`preview_start`); this rule is about anything that needs my sign-ins or that I ask for as "the browser".
+
+## "Switcher" means a draggable dropdown on the page (all projects)
+- **When I ask for a switcher, I mean a small dropdown menu floating on the live page that lists every option, so I can flick between them in place.** Not separate pages, not tabs, not a list in chat.
+- **It must be draggable:** a grip I can grab to move it anywhere on the screen, so it never sits on top of what I'm comparing. It remembers its position and the last option picked (per browser), and starts in a corner that is clear of the dev badge.
+- **It has an X to close it.** Closing hides it for that visit only; the option I picked stays applied, and a reload brings the switcher back.
+- **One switcher per thing being compared.** When several sections have options, each gets its own small box that drags and closes on its own, never one combined panel. They start stacked in a corner without overlapping.
+- **It is temporary.** Show it only on preview or dev builds, never on the launch build, note it in the project's CLAUDE.md under what's temporary, and ask to remove it once I've picked (per the stray pages rule).
+- **Why:** on one client site I asked for a footer switcher and had to explain what I meant, then ask for it to be movable, closable, and split into one box per section.
