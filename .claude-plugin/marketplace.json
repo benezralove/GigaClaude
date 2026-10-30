@@ -31,6 +31,20 @@
       "homepage": "https://github.com/twelvelabs-io/twelve-labs-claude-code-plugin"
     },
     {
+      "name": "rea",
+      "source": { "source": "npm", "package": "rea-agents", "version": "6.8.0" },
+      "version": "6.8.0",
+      "description": "Reverse engineer anything with agents, from app behavior down to native binaries: skills plus an MCP server (needs Node.js 22.23.4+, 24.22.1+ or 26.12.1+).",
+      "homepage": "https://github.com/morluto/rea",
+      "strict": false,
+      "mcpServers": {
+        "rea": {
+          "command": "npx",
+          "args": ["-y", "rea-agents@6.8.0", "mcp"]
+        }
+      }
+    },
+    {
       "name": "security-guidance",
       "source": "./plugins/security-guidance",
       "description": "Security reminder hook that warns about potential security issues when editing files, including command injection, XSS, and unsafe code patterns.",

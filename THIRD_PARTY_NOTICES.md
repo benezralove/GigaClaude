@@ -19,4 +19,4 @@ Modifications: none to the files above, except that they are repackaged as a Cla
 | security-guidance | https://github.com/anthropics/claude-plugins-public/tree/main/plugins/security-guidance | Apache-2.0 | [plugins/security-guidance/LICENSE](plugins/security-guidance/LICENSE) |
 | typescript-lsp | https://github.com/anthropics/claude-plugins-public/tree/main/plugins/typescript-lsp | Apache-2.0 | [plugins/typescript-lsp/LICENSE](plugins/typescript-lsp/LICENSE) |
 
-superpowers, last30days and twelvelabs are not copied here; the marketplace points at their own repositories.
+superpowers, last30days and twelvelabs are not copied here; the marketplace points at their own repositories. rea (MIT, https://github.com/morluto/rea) is not copied either; the marketplace installs its npm package `rea-agents`.
