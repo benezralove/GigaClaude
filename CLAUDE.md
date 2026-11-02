@@ -145,6 +145,12 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - When adding or updating images: convert with `sharp` (quality ~80 for photos, ~90 for logos/graphics; downscale to a sensible max width with `withoutEnlargement`, never upscale), upload the `.webp` objects to the bucket with `image/webp` content-type and a cache-control header, and reference `.webp` in code. Keep the original files in R2 as masters.
 - Applies whenever images are stored on R2 for this stack. Skip for non-image assets and for projects not on this R2 setup.
 
+## Client documents: every iteration is a new version (all projects)
+- **Standing rule:** when revising a proposal, audit, report or any other document for a client or contact, save each new iteration as a new version next to the old one. Never overwrite the previous file. This covers the rendered file (PDF, DOCX) and its source (HTML, Markdown).
+- **How:** put the version in the filename (`...-v2.pdf`, `...-v3.pdf`, with the source to match, e.g. `proposal-v2.html`) and update the version and date on the document itself. Older versions stay where they are, untouched, so any version that was sent can be found again.
+- **Why:** on one client job, the proposal went through a 13-page and then a 6-page rewrite, each replacing the last file, so the earlier versions only survive in git history.
+- A check render (`check.pdf`) or a draft that was never shown to anyone isn't a version; it can be overwritten or deleted.
+
 ## Email content: no em dashes
 - **Standing rule (all projects, always):** never use an em dash (—) in any email. This covers both emails I draft or send (e.g. via Gmail or an MCP tool) and email content produced by code I write (subject lines, HTML or text templates, notification bodies).
 - Use a comma, colon, parentheses, or a plain hyphen instead.
@@ -183,6 +189,7 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **Repeatable process once given the go-ahead:** (1) commit the work in clean, logical commits, ending each message with the `Co-Authored-By` trailer for the current model, e.g. `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`, and do not commit build artifacts (e.g. `tsconfig.tsbuildinfo`); (2) fast-forward the deploy branch and push it; (3) confirm local and remote are in sync; (4) watch the deployment to completion before reporting done, with `gh run watch <id> --exit-status` when it deploys via a GitHub Action, or by confirming the deployment went live via the Cloudflare Pages dashboard/API otherwise. Report the commit SHA and that the deploy went green.
 - **Never bypass git.** Do not run a local `deploy` / `wrangler deploy` / `next build && deploy` from the working tree for anything not committed and pushed: it makes the deploy branch lag production and silently orphans work for any new branch or clone. Always commit + push and let the connected pipeline deploy.
 - **OpenNext on Cloudflare: prerendered dynamic routes 404 without an incremental cache.** A route using `generateStaticParams` with `dynamicParams = false` works under `next start` but returns 404 on the Worker if `open-next.config.ts` has no `incrementalCache`: the prerendered page misses the cache and Next treats it as unknown. For a fully static site, set `defineCloudflareConfig({ incrementalCache: staticAssetsIncrementalCache })` (import from `@opennextjs/cloudflare/overrides/incremental-cache/static-assets-incremental-cache`). Before the first push of an OpenNext site, run `npm run preview` (the local Workers runtime) and load one URL from every dynamic route, because `next start` will not catch this.
+- **Self-hosted video on Workers static assets needs byte-range handling.** The static-assets layer answers `Range` requests with a 200 and the whole file (observed 2 Nov 2026; re-test with `curl -sI -r 0-1 <video url>`), and Safari on iPhone and Mac won't play `<video>` without 206 responses. Route `/video/*` through the Worker with a range handler (for example, one that passes `bytes=0-` through natively and copies other ranges in 64 KB reads), or host the clips on R2, which handles ranges itself. Check a real iPhone after launch.
 - Skip for projects not wired to this GitHub + Cloudflare setup.
 
 ## Standard deploy setup for client sites
@@ -200,10 +207,10 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **Why:** on a client site the preview's `noindex` meta and its `Disallow: /` robots.txt were written straight into the code. Copying that build to the live domain would have told Google to drop the client's live site. It was only caught by chance, weeks in.
 - **How, every time:**
   1. One flag, off by default: e.g. `SITE_INDEXABLE=true` read at build time. Unset means hidden. Only the production/launch build sets it.
-  2. Both outputs follow that flag: the robots meta on every page (`noindex, nofollow` when hidden) and robots.txt (`Disallow: /` when hidden), generated, not a fixed file in `public/`.
+  2. The flag drives noindex, not robots.txt: the robots meta on every page (`noindex, nofollow` when hidden), plus an `X-Robots-Tag: noindex` header where the host allows it. Leave robots.txt open while hidden: Google can't see a noindex on a page robots.txt blocks, and blocked URLs can still be indexed from links. When one Worker serves both the preview address and the real domain, hide the preview by host instead (a `_headers` rule on `https://:version.:subdomain.workers.dev/*` with `X-Robots-Tag: noindex`), or turn `workers_dev` off once live.
   3. Canonical tags point at the real domain, so even an accidental crawl credits the live site.
   4. Write the launch step into the project's CLAUDE.md under "At launch": build with the flag on, then check `robots.txt` and one page's robots meta on the built output before DNS moves.
-- **Migration check, before any domain switch:** every live URL either still exists or 301-redirects to its new home (renamed pages included); a sitemap exists and lists the real domain; nothing in the launch build still says noindex. A hidden launch or a broken URL costs months of search traffic and is invisible until rankings drop.
+- **Before any launch, rebuild or domain switch, run the `site-launch` skill** (before, at and after the switch). Short version: every old URL still exists or 301s to a page that really replaces it, found from real sources, not guesses; the sitemap lists the real domain; nothing in the launch build says noindex; Search Console, analytics and form mail work on day one. One client site went live with guessed redirects, no Search Console and its ad tracking dropped.
 - **The sitemap is generated, never hand-kept.** Build it from the same route lists or data that generate the pages (e.g. Next's `app/sitemap.ts` reading each route's `generateStaticParams`), so a new page is in it automatically and a deleted one drops out. Leave out noindex and redirected pages. Set it up with the first deploy, and name it in robots.txt on the launch build only. A hand-maintained sitemap is a copy that drifts, the same trap as any restated value.
 - Skip for sites that are not meant to be public at all (internal tools behind auth).
 
@@ -222,6 +229,12 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
   - Testimonials are quoted word for word from the review platform itself (Google, hipages), never copied from the client's own site, which may have edited them. Cut only with an ellipsis, and name the platform.
 - **Small changes are exempt:** a fixed typo, a reworded sentence, a button label or a single paragraph doesn't need a keyword question. Keep the existing page's terms intact; don't strip a keyword out while editing.
 - **Never sacrifice reading for ranking:** no keyword stuffing and no awkward exact-match phrases. If the natural sentence and the keyword clash, the sentence wins and the keyword goes in the heading or title instead.
+
+## Everything a visitor can reach must be in the page's HTML (all sites)
+- **Standing rule:** content behind tabs, toggles, dropdown menus, accordions, carousels, "show more" and count-up numbers is rendered in the HTML from the start and hidden until opened (the `hidden` attribute or `visibility: hidden`), never added only when someone clicks, swipes or scrolls. Count-ups put their final number in the HTML and animate on the client.
+- **Why:** Google doesn't click, swipe or scroll, so anything rendered only on interaction is invisible to it. On one client site the menu dropdown links, most of a benefits list, the membership plan details and the prices were all missing from the live HTML.
+- **Check:** grep the built page (`out/*.html` or curl) for the text of every tab, plan and dropdown item, and add a test that asserts it.
+- **Careful:** a hidden block inside a container that spaces children by position (`space-y-*`, `divide-*`, `last:`) can change the visible layout; check it.
 
 ## No sycophancy (always on, all projects)
 - **Standing rule: zero flattery, zero validation filler.** Never open a reply with praise or agreement noise — no "Great question", "Good idea", "Excellent catch", "Perfect!", and never any variant of "You're absolutely right". Start with the substance itself. No "I'd be happy to", no enthusiasm-mirroring, no exclamation marks as tone padding.
@@ -252,6 +265,7 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **Always relay the conclusion, not the transcript.** I don't see subagent reports. Tell me what they found and which files/sources it came from.
 - **Multi-agent Workflows stay opt-in.** They can spawn dozens of agents at real token cost, so offer one in a line and wait for my yes. Same for "ultracode" mode.
 - **Never edit or reorder a workflow script between a run and its resume.** A resume reuses finished agent calls only up to the first call that differs, so any change, even just reordering the work list, reruns everything after it at full cost. If the remaining work needs a different shape, write a new script that covers only what is unfinished. This has cost two full runs before.
+- **Workflow scripts have no Node or browser APIs.** `URL`, `fs` and similar don't exist there, so parse with plain string or regex code. Never wrap parsing in a try/catch that skips on error: a missing API then silently empties the list. After any merge or filter, log the count and stop if it's zero. Once this skipped all 55 candidates and left the judge with nothing for 10 minutes.
 - **Delegating is not permission to widen scope.** The task stays the task.
 
 ## Image options are shown, never listed (all projects)
