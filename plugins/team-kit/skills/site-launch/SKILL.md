@@ -28,7 +28,8 @@ Sources: developers.google.com/search/docs/crawling-indexing/site-move-with-url-
 - Tests in CI: every target exists, every source has its slash twin, no source shadows a page. Keep the file forever.
 
 ### The new site
-- Every page: title, description, self canonical in the exact URL form the server returns, one H1, html lang, alt text on meaningful images, og tags and a 1200x630 og:image.
+- Every page: title, description, self canonical in the exact URL form the server returns, one H1, html lang, og tags and a 1200x630 og:image.
+- Alt text, checked image by image, not assumed: script a list of every `<img>` on every built page with its alt, and check the data files for images that only load in carousels, tabs and rotating banners. Real photos (heroes, banners, content) get a description of what's in them, written after looking at the photo; faded backgrounds behind text and repeated images get `alt=""`. Don't write "at <business>" on stock photos. Add a test that every image has an alt attribute and each page's main photo has a description. One client site launched with 13 real photos left blank, including every page hero.
 - Everything behind tabs, toggles, menus, carousels and count-ups is in the HTML (global rule).
 - Structured data: the most specific LocalBusiness subtype, matching the GBP; WebSite on the home page; no self-serving review stars.
 - Sitemap generated from routes, with real lastmod or none. robots.txt open. Unknown paths return a real 404 (not_found_handling "404-page") with links back in. Previews noindexed by host or build flag.
