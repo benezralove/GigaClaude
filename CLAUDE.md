@@ -303,6 +303,12 @@ Team version of a personal global CLAUDE.md. Copy to `~/.claude/CLAUDE.md` (or m
 - **Workflow scripts have no Node or browser APIs.** `URL`, `fs` and similar don't exist there, so parse with plain string or regex code. Never wrap parsing in a try/catch that skips on error: a missing API then silently empties the list. After any merge or filter, log the count and stop if it's zero. Once this skipped all 55 candidates and left the judge with nothing for 10 minutes.
 - **Delegating is not permission to widen scope.** The task stays the task.
 
+## Cache-busting links when sharing pages (all projects)
+- **When I give the user a link to a page that was just built or changed, so they or a client can look at it, add a cache-busting query** such as `?v=1107-1430` (date and time; use `&v=` if the URL already has a `?`), and change the value on every update. Without it, a browser or Shopify can serve an old saved copy, which is why the user ended up opening links in incognito.
+- **Always for:** Shopify storefront pages and anything changed in a Shopify theme or app extension (every hidden page on one client store needed it, Nov 2026), and any link the user will forward to a client, including links inside WhatsApp drafts.
+- **Usually skip for:** local dev-server links (localhost), admin and dashboard links, docs, and third-party sites.
+- **What it does and doesn't do:** it only forces a fresh copy of the page; it changes nothing on the page. It doesn't reset the visitor's cart or logins, so for cart testing incognito is still the clean option.
+
 ## Image options are shown, never listed (all projects)
 - **When I ask for image options, send a picture sheet with SendUserFile (display render) in the same reply:** every option side by side, numbered, cropped to the shape the slot actually shows, with the current image marked. A text list of filenames or descriptions is not an answer.
 - **Why:** on one client site I was given a written list of stepper photos and had to ask for them visually.
