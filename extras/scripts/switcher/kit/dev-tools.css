@@ -1,0 +1,48 @@
+/* Tailwind for the dev-only boxes (the Claude box and the switchers), and nothing else (11 Nov 2026).
+   The master files are written for a Tailwind site; some sites are plain CSS. So:
+   - utilities are generated only from the files in this folder (source(none) + @source);
+   - the theme only adds the CSS variables those utilities use (spacing, font sizes, weights);
+   - instead of Tailwind's site-wide reset, a small reset applies inside the boxes only, so the site looks exactly
+     the same in dev as when built. Everything sits in layers, so any unlayered site rule still wins. */
+@layer theme, base, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@source "./";
+
+@layer base {
+  :is([role="region"][aria-label$=" switcher"], [role="dialog"][aria-label="Send to Claude"], :is([aria-label^="Open Send to Claude"],[aria-label="Close Send to Claude"],[aria-label^="Open the "][aria-label*=" switcher (showing"])),
+  :is([role="region"][aria-label$=" switcher"], [role="dialog"][aria-label="Send to Claude"]) :is(*, *::before, *::after) {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+  /* Type is set once on each box and inherited, so the master's own sizes (text-[16px] on the X, etc.) still apply. */
+  :is([role="region"][aria-label$=" switcher"], [role="dialog"][aria-label="Send to Claude"], :is([aria-label^="Open Send to Claude"],[aria-label="Close Send to Claude"],[aria-label^="Open the "][aria-label*=" switcher (showing"])) {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+  :is([role="region"][aria-label$=" switcher"], [role="dialog"][aria-label="Send to Claude"]) :is(button, select, textarea, input),
+  :is([aria-label^="Open Send to Claude"],[aria-label="Close Send to Claude"],[aria-label^="Open the "][aria-label*=" switcher (showing"]) {
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    border-radius: 0;
+  }
+  :is([role="region"][aria-label$=" switcher"], [role="dialog"][aria-label="Send to Claude"]) :is(button, textarea),
+  :is([aria-label^="Open Send to Claude"],[aria-label="Close Send to Claude"],[aria-label^="Open the "][aria-label*=" switcher (showing"]) {
+    appearance: none;
+  }
+  :is([role="region"][aria-label$=" switcher"], [role="dialog"][aria-label="Send to Claude"]) :is(button, select) {
+    cursor: pointer;
+  }
+  :is([role="region"][aria-label$=" switcher"], [role="dialog"][aria-label="Send to Claude"]) :is(ul, ol) {
+    list-style: none;
+  }
+  :is([role="region"][aria-label$=" switcher"], [role="dialog"][aria-label="Send to Claude"]) :is(img, svg) {
+    display: block;
+  }
+}

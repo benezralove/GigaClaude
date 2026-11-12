@@ -31,7 +31,15 @@ Ben Love's Claude Code setup: skills, plugins, hooks, a status line and a team v
 
 4. Copy [extras/scripts/claude-working-hours.mjs](extras/scripts/claude-working-hours.mjs) to `~/.claude/scripts/claude-working-hours.mjs`. The "Claude working hours" rule in CLAUDE.md runs it when you ask how long Claude spent on something. Needs Node.js.
 
-5. Restart Claude Code.
+5. Switcher and Claude box kit (for website work): copy everything in [extras/scripts/](extras/scripts/) into `~/.claude/scripts/` (the `switcher` folder and `switcher-listener.mjs`) and [extras/hooks/claude-box.mjs](extras/hooks/claude-box.mjs) to `~/.claude/hooks/claude-box.mjs`, then add it as a SessionStart hook in `~/.claude/settings.json`:
+
+   ```json
+   "hooks": { "SessionStart": [ { "hooks": [ { "type": "command", "command": "node ~/.claude/hooks/claude-box.mjs" } ] } ] }
+   ```
+
+   Merge it into any hooks you already have, and on Windows use the full path (`node C:/Users/<you>/.claude/hooks/claude-box.mjs`). In a Next.js site folder the hook gives the site a listener port (from 4792, saved in `~/.claude/scripts/switcher/ports.json`) and tells Claude to set up the Claude box; everywhere else it does nothing. The "Switcher" rule in CLAUDE.md explains the rest. Needs Node.js. If you already have a `ports.json`, keep yours.
+
+6. Restart Claude Code.
 
 To get updates later: `/plugin marketplace update gigaclaude`, then `/plugin update team-kit@gigaclaude` (and the same for any other plugin). CLAUDE.md and the files in `extras/` don't update through plugins: fetch them again from this repo when they change.
 
