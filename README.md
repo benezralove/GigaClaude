@@ -1,6 +1,32 @@
 # GigaClaude
 
-Ben Love's Claude Code setup: skills, plugins, hooks, a status line and a team version of the global `CLAUDE.md`.
+Ben Love's Claude Code setup: skills, plugins, hooks, the Claude box and switcher for website work, a status line and a team version of the global `CLAUDE.md`.
+
+## Claude box and switcher (for website work)
+
+Two small tools that sit on a website's local preview while Claude Code builds it, so you can talk to the session and compare options without leaving the page. They only appear in development, never on the live site.
+
+**The Claude box** is a round Claude mark in the corner of the preview. Click it, or press Ctrl + . (Cmd + . on a Mac), and a box opens where you can:
+
+- paste or drop screenshots and type a note, then send it straight into the Claude session working on that site
+- press Enter to send, Shift+Enter for a new line, and Ctrl+D to dictate (the browser's own speech recognition, with a mic button in the corner)
+- see the session's latest replies under "Latest from Claude", refreshed every few seconds, so you can follow along without switching windows
+- reuse any of your last 10 messages from "Past messages"
+
+It can be dragged anywhere. Clicking outside it or pressing Esc closes it and keeps your draft.
+
+**The switcher** is a small floating dropdown that lists every version of something (say, three footer designs) so you can flick between them in place on the real page. Ask Claude for "a switcher for the footer" and it builds one. Each one:
+
+- drags anywhere by its grip and remembers its position and your last pick
+- collapses to a single dropdown, and closes with its X (add `?switchers` to the address to bring closed boxes back)
+- has a note box for comments and screenshots, and a yellow "Use this one" button that sends your pick and note to Claude
+- gets its own box when several parts of the page have options
+
+Switchers are temporary: Claude asks to remove them once you've picked.
+
+**How it works:** each website gets its own listener port from a small registry (`~/.claude/scripts/switcher/ports.json`, starting at 4792). A session-start hook spots when Claude Code opens a Next.js site, adds the Claude box if it's missing (as a small dev-only commit) and tells Claude to run the listener (`node ~/.claude/scripts/switcher-listener.mjs <port>`) whenever a preview is running. Your messages and picks then arrive in the session, and pasted images are saved to `~/.claude/inbox/` for Claude to open. The listener only answers pages served from your own computer.
+
+**Needs:** a Next.js site (Tailwind or plain CSS), Node.js, and the kit installed (step 5 below). The full rules are in the "Switcher" section of [CLAUDE.md](CLAUDE.md), and the setup steps Claude follows are in [extras/scripts/switcher/kit/README.md](extras/scripts/switcher/kit/README.md).
 
 ## Install (about two minutes)
 
@@ -78,6 +104,8 @@ Skills from a plugin are namespaced, so `/council` may show as `/team-kit:counci
 Skills whose tools you don't have simply won't work; they don't affect anything else.
 
 ## What's in it
+
+Tools in [extras/](extras/): the Claude box and switcher kit (see the top of this page), the working-hours script and the status line.
 
 Written in-house: council, decision-record, source-sweep, skill-harvest, verify-loop, transcribe, youtube, codex-copy, everything-search, grilling, grill-me, scroll-world, site-launch (a launch and migration checklist for client sites).
 
